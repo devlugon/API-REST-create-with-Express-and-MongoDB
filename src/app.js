@@ -1,4 +1,15 @@
  import express from "express";
+ import databaseConnection from "./config/dbConnect.js";
+
+const connection = await databaseConnection();
+
+connection.on("error", (erro) => {
+   console.log("Connection refused", erro);
+});
+
+connection.once("open", () => {
+   console.log("Connection to database completed!");
+});
 
  const app = express();
  app.use(express.json());
@@ -50,5 +61,5 @@
     res.status(200).send("Livro removido com sucesso");
  });
 
-
  export default app;
+
