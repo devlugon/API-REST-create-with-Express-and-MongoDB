@@ -1,5 +1,6 @@
 import livro from "../models/livro.js";
 import { autor } from "../models/autor.js";
+import { editora } from "../models/editora.js";
 
 class LivroController {
     
@@ -56,6 +57,23 @@ class LivroController {
             res.status(500).json({ message: `${erro.message} - Request of delete failed`});
         }
     };
+
+    static async listarLivrosPorEditora (req, res) {
+        const publisher = req.query.editora;
+        try {
+            const editoraEncontrada = await editora.findOne( { nome: publisher } );
+
+            if (!editoraEncontrada) {
+                return res.status(404).json({ message: 'Editora não encontrada.' });
+            }
+
+            const livrosPorEditora = await livro.find({ 'editora.nome': editoraEncontrada.nome });
+            res.status(200).json(livrosPorEditora);
+        } catch(erro) {
+            res.status(500).json({ message: `${erro.message} - Search failed`});
+        }
+    }
+
 };
 
 export default LivroController;
